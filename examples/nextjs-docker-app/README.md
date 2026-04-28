@@ -14,17 +14,24 @@ Materi itu menjelaskan cara menjalankan project, struktur App Router, `layout.js
 
 ## Yang dipelajari
 
-| Bagian | Fungsi |
-|--------|--------|
-| `app\page.js` | UI utama untuk demo browser |
-| `app\globals.css` | CSS global untuk layout, warna, responsive grid, dan component style |
-| `components\*.js` | Component React yang dipakai ulang oleh halaman |
-| `lib\*.js` | Data dan helper agar halaman tidak penuh logic |
-| `app\api\health\route.js` | Health endpoint untuk Docker/Compose/CI |
-| `app\api\deployments\route.js` | Data JSON untuk menjelaskan alur deployment |
-| `Dockerfile` | Multi-stage build Next.js production |
-| `compose.yaml` | Menjalankan app dengan environment variable dan health check |
-| `tests\health.test.mjs` | Test sederhana untuk pipeline CI |
+| Bagian | Fungsi | Komentar di kode |
+|--------|--------|------------------|
+| `app\layout.js` | Layout global, metadata, `{children}` | ✅ Layout, import CSS, App Router |
+| `app\page.js` | UI utama untuk demo browser | ✅ Import, env var, JSX, className, `.map()` |
+| `app\globals.css` | CSS global: variabel, flexbox, grid, responsive | ✅ CSS Variables, Flexbox vs Grid, `@media`, `::before` |
+| `components\MetricCard.js` | Component React dengan props sederhana | ✅ Props, destructuring, export default |
+| `components\DeploymentStep.js` | Component React dengan object props | ✅ Object props, `step.title` |
+| `lib\health.mjs` | Helper function untuk health check | ✅ Pure function, default params, `process.env` |
+| `lib\teachingData.js` | Data terpisah dari UI | ✅ Pemisahan data, array of objects |
+| `app\api\health\route.js` | Health endpoint untuk Docker/Compose/CI | ✅ API route, `NextResponse`, `dynamic` |
+| `app\api\deployments\route.js` | Data JSON untuk alur deployment | ✅ Multiple API endpoints |
+| `next.config.mjs` | Konfigurasi Next.js | ✅ `standalone` output, turbopack, `reactStrictMode` |
+| `Dockerfile` | Multi-stage build Next.js production | ✅ 4 stage: base, deps, builder, runner |
+| `compose.yaml` | Menjalankan app dengan env var dan health check | — |
+| `tests\health.test.mjs` | Test sederhana untuk pipeline CI | — |
+
+> 💡 **Setiap file sudah dilengkapi komentar penjelasan berbahasa Indonesia.**
+> Mahasiswa cukup buka file di VS Code → langsung baca penjelasan tiap baris tanpa perlu buka README terpisah.
 
 ## Jalankan lokal
 
@@ -49,10 +56,11 @@ npm run build
 docker build -t nextjs-docker-app:kelas .
 ```
 
-Dockerfile memakai 3 tahap:
+Dockerfile memakai 4 tahap (lihat komentar di dalam file untuk penjelasan lengkap):
 
 | Stage | Isi |
 |-------|-----|
+| `base` | Image dasar Node.js 20 Alpine |
 | `deps` | Install dependency dengan `npm ci` |
 | `builder` | Menjalankan test dan `next build` |
 | `runner` | Menjalankan output standalone sebagai user non-root |
@@ -95,13 +103,19 @@ docker compose down
 
 ## Alur demo mengajar
 
-1. Tunjukkan `app\page.js` dan endpoint API agar mahasiswa melihat isi aplikasinya.
-2. Jalankan `npm test` dan `npm run build` untuk membuktikan kode siap.
-3. Baca `Dockerfile` dari atas ke bawah: dependency, build, runtime.
-4. Build image dengan `docker build`.
-5. Run container dan buka browser.
-6. Ubah `NEXT_PUBLIC_APP_MESSAGE` di `compose.yaml`, jalankan ulang, lalu lihat UI berubah.
-7. Tunjukkan endpoint `/api/health` sebagai bahan smoke test di pipeline CI/CD.
+1. Buka project di VS Code — mahasiswa baca komentar di setiap file.
+2. Tunjukkan `app\layout.js` → jelaskan layout global dan `{children}`.
+3. Tunjukkan `app\page.js` → jelaskan JSX, className, env var, `.map()`.
+4. Tunjukkan `app\globals.css` → jelaskan CSS Variables, Flexbox, Grid, Responsive.
+5. Tunjukkan `components\MetricCard.js` → jelaskan props dan component.
+6. Tunjukkan `app\api\health\route.js` → jelaskan API route.
+7. Jalankan `npm run dev` dan buka browser `http://localhost:3000`.
+8. Jalankan `npm test` dan `npm run build` untuk membuktikan kode siap.
+9. Baca `Dockerfile` dari atas ke bawah: base, deps, builder, runner.
+10. Build image dengan `docker build`.
+11. Run container dan buka browser.
+12. Ubah `NEXT_PUBLIC_APP_MESSAGE` di `compose.yaml`, jalankan ulang, lalu lihat UI berubah.
+13. Tunjukkan endpoint `/api/health` sebagai bahan smoke test di pipeline CI/CD.
 
 ## Hubungan dengan DevOps/CI-CD
 
